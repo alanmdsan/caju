@@ -15,7 +15,7 @@
     $sql = "UPDATE restaurantes SET `nome`= '$nome', `cnpj`= '$cnpj', `endereco`= '$endereco', `telefone`= '$telefone', `descricao`= '$descricao' 
             WHERE id = " . $_GET['id'];
     if (mysqli_query($conn, $sql)) {
-      header("location: index.php");
+      header('location: index.php');
     } else {
       echo 'Algo deu errado. Tente novamente mais tarde.';
     }
