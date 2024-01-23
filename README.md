@@ -1,4 +1,4 @@
-# O App Caju é CRUD de restaurantes
+# O App Caju é um CRUD de restaurantes em PHP
 
 ## Criação do BD
 
