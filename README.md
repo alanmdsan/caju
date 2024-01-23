@@ -1,6 +1,6 @@
-O App Caju é CRUD de restaurantes.
+# O App Caju é CRUD de restaurantes
 
-Criação do BD:
+## Criação do BD
 
 CREATE TABLE `caju`.`restaurantes` ( 
 `id` INT NOT NULL AUTO_INCREMENT , 
