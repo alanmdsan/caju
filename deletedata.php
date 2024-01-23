@@ -1,10 +1,13 @@
 <?php
-  require_once('conn.php');
-  $id = $_GET['id'];
-  $query = "DELETE FROM restaurantes WHERE id = '$id'";
-  if (mysqli_query($conn, $query)) {
+  include_once('./src/models/Connection.php');
+  
+  $stmt = Connection::getConnection()->prepare('DELETE FROM restaurantes WHERE id = ?');
+  
+  try {
+    $stmt->execute([$_GET['id']]);
+    
     header('location: index.php');
-  } else {
-    echo 'Algo deu errado. Tente novamente mais tarde.';
+  } catch (PDOException $e) {
+    echo 'Algo deu errado. Tente novamente mais tarde. ' . $e->getMessage();
   }
 ?>

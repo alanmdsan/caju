@@ -1,5 +1,6 @@
 <?php
-  require_once('conn.php');
+  include_once('./src/models/Connection.php');
+
   if (isset($_POST['submit'])) {
 
     $nome = $_POST['nome'];
@@ -9,13 +10,20 @@
     $descricao = $_POST['descricao'];
 
     if ($nome != '' && $cnpj != '' && $endereco != '' && $telefone != '' && $descricao != '') {
-      
-      $sql = "INSERT INTO restaurantes (`nome`, `descricao`, `cnpj`, `endereco`, `telefone`) VALUES ('$nome', '$descricao', '$cnpj', '$endereco', '$telefone')";
-      
-      if (mysqli_query($conn, $sql)) {
+      try {
+        $stmt = Connection::getConnection()->prepare('INSERT INTO restaurantes (nome, cnpj, endereco, telefone, descricao) 
+                                                      VALUES(:nome, :cnpj, :endereco, :telefone, :descricao)');
+        $stmt->execute(array(
+          ':nome' => $nome,
+          ':cnpj' => $cnpj,
+          ':endereco' => $endereco,
+          ':telefone' => $telefone,
+          ':descricao' => $descricao
+        ));
+
         header('location: index.php');
-      } else {
-        echo 'Algo deu errado. Tente novamente mais tarde.';
+      } catch (PDOException $e) {
+        echo 'Algo deu errado. Tente novamente mais tarde. ' . $e->getMessage();
       }
     } else {
       echo 'Nome, endereço, telefone, CNPJ e descrição devem ser preenchidos!';

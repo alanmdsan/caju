@@ -1,24 +1,41 @@
 <?php
-  require_once('conn.php');
-  if (isset($_POST['nome']) && 
+  include_once('./src/models/Connection.php');
+
+  if (isset($_GET['id']) &&
+      isset($_POST['nome']) && 
       isset($_POST['cnpj']) &&
       isset($_POST['endereco']) &&
       isset($_POST['telefone']) &&
       isset($_POST['descricao'])) {
 
+    $id = $_GET['id'];
     $nome = $_POST['nome'];
     $cnpj = $_POST['cnpj'];
     $endereco = $_POST['endereco'];
     $telefone = $_POST['telefone'];
     $descricao = $_POST['descricao'];
     
-    $sql = "UPDATE restaurantes SET `nome`= '$nome', `cnpj`= '$cnpj', `endereco`= '$endereco', `telefone`= '$telefone', `descricao`= '$descricao' 
-            WHERE id = " . $_GET['id'];
-    if (mysqli_query($conn, $sql)) {
-      header('location: index.php');
-    } else {
-      echo 'Algo deu errado. Tente novamente mais tarde.';
-    }
+    try {
+        $stmt = Connection::getConnection()->prepare('UPDATE restaurantes 
+                                                      SET nome = :nome, 
+                                                          cnpj = :cnpj, 
+                                                          endereco = :endereco, 
+                                                          telefone = :telefone, 
+                                                          descricao = :descricao 
+                                                      WHERE id = :id');
+        $stmt->execute(array(
+          ':id' => $id,
+          ':nome' => $nome,
+          ':cnpj' => $cnpj,
+          ':endereco' => $endereco,
+          ':telefone' => $telefone,
+          ':descricao' => $descricao
+        ));
+
+        header('location: index.php');
+      } catch (PDOException $e) {
+        echo 'Algo deu errado. Tente novamente mais tarde. ' . $e->getMessage();
+      }
   }
 ?>
 
@@ -45,16 +62,16 @@
       <h2 style="text-align: center;margin: 24px 0;">Atualize o restaurante</h2>
       <div class="container">
         <?php
-          require_once('conn.php');
-          $sql_query = "SELECT * FROM restaurantes WHERE id = " . $_GET['id'];
-          if ($result = $conn ->query($sql_query)) {
-            while ($row = $result -> fetch_assoc()) { 
-              $id = $row['id'];
-              $nome = $row['nome'];
-              $cnpj = $row['cnpj'];
-              $endereco = $row['endereco'];
-              $telefone = $row['telefone'];
-              $descricao = $row['descricao'];
+          $stmt = Connection::getConnection()->prepare('SELECT * FROM restaurantes WHERE id = ?');
+          $stmt->execute([$_GET['id']]); 
+          $restaurant = $stmt->fetch();
+          if (!empty($restaurant)) {
+            $id = $restaurant['id'];
+            $nome = $restaurant['nome'];
+            $cnpj = $restaurant['cnpj'];
+            $endereco = $restaurant['endereco'];
+            $telefone = $restaurant['telefone'];
+            $descricao = $restaurant['descricao'];
         ?>
         <form action="updatedata.php?id=<?php echo $id; ?>" method="post">
           <div class="row">
@@ -84,7 +101,6 @@
           </div>
         </form>
         <?php
-            }
           }
         ?>
       </div>

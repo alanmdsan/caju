@@ -1,8 +1,6 @@
 <?php
-require_once('./src/models/Database.php');
 
 class Restaurante {
-    private $db;
     private $id;
     private $nome;
     private $descricao;
@@ -11,7 +9,6 @@ class Restaurante {
     private $telefone;
 
     function __construct() {
-        $this->db = Database::getInstance();
     }
 
     public function setID($id) {

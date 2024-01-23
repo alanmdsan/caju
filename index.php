@@ -68,16 +68,16 @@
           </thead>
           <tbody>
             <?php 
-              require_once('conn.php');
+              include_once('./src/models/Connection.php');
               $sql_query = "SELECT * FROM restaurantes";
-              if ($result = $conn->query($sql_query)) {
-                while ($row = $result->fetch_assoc()) { 
-                  $id = $row['id'];
-                  $nome = $row['nome'];
-                  $cnpj = $row['cnpj'];
-                  $endereco = $row['endereco'];
-                  $telefone = $row['telefone'];
-                  $descricao = $row['descricao'];
+              $result = Connection::getConnection()->query($sql_query);
+              while ($list = $result->fetch(PDO::FETCH_ASSOC)) {
+                $id = $list['id'];
+                $nome = $list['nome'];
+                $cnpj = $list['cnpj'];
+                $endereco = $list['endereco'];
+                $telefone = $list['telefone'];
+                $descricao = $list['descricao'];
             ?>
                 <tr class="trow">
                   <td><?php echo $id; ?></td>
@@ -90,7 +90,6 @@
                   <td><a href="deletedata.php?id=<?php echo $id; ?>" class="btn btn-danger">Delete</a></td>
                 </tr>
             <?php
-                } 
               } 
             ?>
           </tbody>
