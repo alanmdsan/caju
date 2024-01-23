@@ -18,7 +18,7 @@
   </head>
   <body>
     <section style="margin: 0 auto;max-width: 640px;">
-      <h1 style="text-align: center;margin: 50px 0;">Cadastre aqui seu restaurante</h1>
+      <h2 style="text-align: center;margin: 24px 0;">Cadastre o restaurante</h2>
       <div class="container">
         <form action="adddata.php" method="post">
           <div class="row">
@@ -43,10 +43,58 @@
               <textarea class="form-control" name="descricao" id="descricao" style="height: 100px;resize: none;" required></textarea>
             </div>
             <div class="mt-3 form-group col-lg-6">
-              <input type="submit" name="submit" id="submit" class="btn btn-primary">
+              <input type="submit" name="submit" id="submit" class="btn btn-success">
             </div>
           </div>
         </form>
+      </div>
+    </section>
+
+    <section style="margin: 100px 0;">
+      <h4 style="margin-left: 50px">Listagem de restaurantes:</h4>
+      <div class="container">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Nome</th>
+              <th scope="col">CNPJ</th>
+              <th scope="col">Endereço</th>
+              <th scope="col">Telefone</th>
+              <th scope="col">Descrição</th>
+              <th scope="col">Edit</th>
+              <th scope="col">Delete</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php 
+              require_once('conn.php');
+              $sql_query = "SELECT * FROM restaurantes";
+              if ($result = $conn->query($sql_query)) {
+                while ($row = $result->fetch_assoc()) { 
+                  $id = $row['id'];
+                  $nome = $row['nome'];
+                  $cnpj = $row['cnpj'];
+                  $endereco = $row['endereco'];
+                  $telefone = $row['telefone'];
+                  $descricao = $row['descricao'];
+            ?>
+                <tr class="trow">
+                  <td><?php echo $id; ?></td>
+                  <td><?php echo $nome; ?></td>
+                  <td><?php echo $cnpj; ?></td>
+                  <td><?php echo $endereco; ?></td>
+                  <td><?php echo $telefone; ?></td>
+                  <td><?php echo $descricao; ?></td>
+                  <td><a href="updatedata.php?id=<?php echo $id; ?>" class="btn btn-warning">Edit</a></td>
+                  <td><a href="deletedata.php?id=<?php echo $id; ?>" class="btn btn-danger">Delete</a></td>
+                </tr>
+            <?php
+                } 
+              } 
+            ?>
+          </tbody>
+        </table>
       </div>
     </section>
   </body>
