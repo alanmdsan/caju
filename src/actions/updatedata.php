@@ -1,5 +1,5 @@
 <?php
-  include_once('./src/models/Connection.php');
+  include_once('../models/Restaurante.php');
 
   if (isset($_GET['id']) &&
       isset($_POST['nome']) && 
@@ -7,32 +7,20 @@
       isset($_POST['endereco']) &&
       isset($_POST['telefone']) &&
       isset($_POST['descricao'])) {
-
-    $id = $_GET['id'];
-    $nome = $_POST['nome'];
-    $cnpj = $_POST['cnpj'];
-    $endereco = $_POST['endereco'];
-    $telefone = $_POST['telefone'];
-    $descricao = $_POST['descricao'];
     
     try {
-        $stmt = Connection::getConnection()->prepare('UPDATE restaurantes 
-                                                      SET nome = :nome, 
-                                                          cnpj = :cnpj, 
-                                                          endereco = :endereco, 
-                                                          telefone = :telefone, 
-                                                          descricao = :descricao 
-                                                      WHERE id = :id');
-        $stmt->execute(array(
-          ':id' => $id,
-          ':nome' => $nome,
-          ':cnpj' => $cnpj,
-          ':endereco' => $endereco,
-          ':telefone' => $telefone,
-          ':descricao' => $descricao
-        ));
+        $restaurante = new Restaurante();
+        $data = [
+          'id' => $_GET['id'],
+          'nome' => $_POST['nome'],
+          'cnpj' => $_POST['cnpj'],
+          'endereco' => $_POST['endereco'],
+          'telefone' => $_POST['telefone'],
+          'descricao' => $_POST['descricao']
+        ];
+        $restaurante->update($data);
 
-        header('location: index.php');
+        header('location: ../../index.php');
       } catch (PDOException $e) {
         echo 'Algo deu errado. Tente novamente mais tarde. ' . $e->getMessage();
       }
@@ -62,9 +50,8 @@
       <h2 style="text-align: center;margin: 24px 0;">Atualize o restaurante</h2>
       <div class="container">
         <?php
-          $stmt = Connection::getConnection()->prepare('SELECT * FROM restaurantes WHERE id = ?');
-          $stmt->execute([$_GET['id']]); 
-          $restaurant = $stmt->fetch();
+          $restaurante = new Restaurante();
+          $restaurant = $restaurante->get($_GET['id']);
           if (!empty($restaurant)) {
             $id = $restaurant['id'];
             $nome = $restaurant['nome'];

@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
     <!-- style -->
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./src/styles/style.css">
     <!-- bootstrap css -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <!-- bootstrap js -->
@@ -20,7 +20,7 @@
     <section style="margin: 0 auto;max-width: 640px;">
       <h2 style="text-align: center;margin: 24px 0;">Cadastre o restaurante</h2>
       <div class="container">
-        <form action="adddata.php" method="post">
+        <form action="src/actions/adddata.php" method="post">
           <div class="row">
             <div class="mt-2 form-group col-lg-12">
               <label for="">Nome</label>
@@ -68,10 +68,10 @@
           </thead>
           <tbody>
             <?php 
-              include_once('./src/models/Connection.php');
-              $sql_query = "SELECT * FROM restaurantes";
-              $result = Connection::getConnection()->query($sql_query);
-              while ($list = $result->fetch(PDO::FETCH_ASSOC)) {
+              include_once('./src/models/Restaurante.php');
+              $restaurante = new Restaurante();
+              $result = $restaurante->getAll();
+              foreach ($result as $list) {
                 $id = $list['id'];
                 $nome = $list['nome'];
                 $cnpj = $list['cnpj'];
@@ -86,8 +86,8 @@
                   <td><?php echo $endereco; ?></td>
                   <td><?php echo $telefone; ?></td>
                   <td><?php echo $descricao; ?></td>
-                  <td><a href="updatedata.php?id=<?php echo $id; ?>" class="btn btn-warning">Edit</a></td>
-                  <td><a href="deletedata.php?id=<?php echo $id; ?>" class="btn btn-danger">Delete</a></td>
+                  <td><a href="./src/actions/updatedata.php?id=<?php echo $id; ?>" class="btn btn-warning">Edit</a></td>
+                  <td><a href="./src/actions/deletedata.php?id=<?php echo $id; ?>" class="btn btn-danger">Delete</a></td>
                 </tr>
             <?php
               } 

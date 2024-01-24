@@ -1,5 +1,5 @@
 <?php
-  include_once('./src/models/Connection.php');
+  include_once('../models/Restaurante.php');
 
   if (isset($_POST['submit'])) {
 
@@ -11,17 +11,17 @@
 
     if ($nome != '' && $cnpj != '' && $endereco != '' && $telefone != '' && $descricao != '') {
       try {
-        $stmt = Connection::getConnection()->prepare('INSERT INTO restaurantes (nome, cnpj, endereco, telefone, descricao) 
-                                                      VALUES(:nome, :cnpj, :endereco, :telefone, :descricao)');
-        $stmt->execute(array(
-          ':nome' => $nome,
-          ':cnpj' => $cnpj,
-          ':endereco' => $endereco,
-          ':telefone' => $telefone,
-          ':descricao' => $descricao
-        ));
+        $restaurante = new Restaurante();
+        $data = [
+          'nome' => $nome,
+          'cnpj' => $cnpj,
+          'endereco' => $endereco,
+          'telefone' => $telefone,
+          'descricao' => $descricao
+        ];
+        $restaurante->create($data);
 
-        header('location: index.php');
+        header('location: ../../index.php');
       } catch (PDOException $e) {
         echo 'Algo deu errado. Tente novamente mais tarde. ' . $e->getMessage();
       }

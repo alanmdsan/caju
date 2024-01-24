@@ -1,5 +1,7 @@
 <?php
 
+include_once('Connection.php');
+
 class Restaurante {
     private $id;
     private $nome;
@@ -8,71 +10,61 @@ class Restaurante {
     private $endereco;
     private $telefone;
 
-    function __construct() {
+    function __construct() {}
+
+    public function create($data) {
+      $sql_query = 'INSERT INTO restaurantes (nome, cnpj, endereco, telefone, descricao) 
+                    VALUES(:nome, :cnpj, :endereco, :telefone, :descricao)';
+
+      $stmt = Connection::getConnection()->prepare($sql_query);
+
+      return $stmt->execute(array(
+        ':nome' => $data['nome'],
+        ':cnpj' => $data['cnpj'],
+        ':endereco' => $data['endereco'],
+        ':telefone' => $data['telefone'],
+        ':descricao' => $data['descricao']
+      ));
     }
 
-    public function setID($id) {
-        $this->id = $id;
+    public function update($data) {
+      $sql_query = 'UPDATE restaurantes 
+                    SET nome = :nome, 
+                        cnpj = :cnpj, 
+                        endereco = :endereco, 
+                        telefone = :telefone, 
+                        descricao = :descricao 
+                    WHERE id = :id';
+
+      $stmt = Connection::getConnection()->prepare($sql_query);
+      
+      return $stmt->execute(array(
+        ':id' => $data['id'],
+        ':nome' => $data['nome'],
+        ':cnpj' => $data['cnpj'],
+        ':endereco' => $data['endereco'],
+        ':telefone' => $data['telefone'],
+        ':descricao' => $data['descricao']
+      ));
     }
 
-    public function getID() {
-        return $this->id;
+    public function delete($id) {
+      $sql_query = 'DELETE FROM restaurantes WHERE id = ?';
+      $stmt = Connection::getConnection()->prepare($sql_query);
+      return $stmt->execute([$id]);
     }
 
-    public function setNome($nome) {
-        $this->nome = $nome;
-    }
-
-    public function getNome() {
-        return $this->nome;
-    }
-
-    public function setDescricao($descricao) {
-        $this->descricao = $descricao;
-    }
-
-    public function getDescricao() {
-        return $this->descricao;
-    }
-
-    public function setCNPJ($cnpj) {
-        $this->cnpj = $cnpj;
-    }
-
-    public function getCNPJ() {
-        return $this->cnpj;
-    }
-
-    public function setEndereco($endereco) {
-        $this->endereco = $endereco;
-    }
-
-    public function getEndereco() {
-        return $this->endereco;
-    }
-
-    public function setTelefone($telefone) {
-        $this->telefone = $telefone;
-    }
-
-    public function getTelefone() {
-        return $this->telefone;
+    public function get($id) {
+      $sql_query = 'SELECT * FROM restaurantes WHERE id = ?';
+      $stmt = Connection::getConnection()->prepare($sql_query);
+      $stmt->execute([$id]); 
+      return $stmt->fetch();
     }
 
     public function getAll() {
-        $restaurantes = [];
-
-        $sql = 'SELECT * FROM restaurantes';
-
-        $result = $this->db->query($sql);
-    
-        $result_check = mysqli_num_rows($result);
-    
-        if ($result_check > 0) {
-            $restaurantes = mysqli_fetch_all($result, MYSQLI_ASSOC);
-        }
-    
-        return $restaurantes;
+        $sql_query = "SELECT * FROM restaurantes";
+        $result = Connection::getConnection()->query($sql_query);
+        return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 ?>
